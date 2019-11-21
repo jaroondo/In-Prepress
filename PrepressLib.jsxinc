@@ -250,7 +250,7 @@ function EgInk() { //definicia objektu esko graphics ink
         var egName = this.egname //.toLowerCase();
         var swatchName = "";
         for (var j = 0; j < mySwatch.count(); j++) {
-            swatchName = mySwatch[j].name //.toLowerCase();
+            swatchName = mySwatch[j].name; //.toLowerCase();
             if (this.type == "pantone") { // ak ide o pantone farbu
                 egName = "PANTONE " + this.egname;
             };
@@ -1335,16 +1335,10 @@ function setEgInks () { // nacita XMP data a nastaví egInks properties
             egInks.add();
             with (egInks.lastItem()) { // priradí XMP data
                 name = getXMPInkProperty (i, "name");
-                if (name.toString().charAt (2) == String.fromCharCode(94)) {
-                    name = getXMPInkProperty (i, "name").toString().substr(3);
-                };
                 //name = getXMPInkProperty (i, "egname");
                 type = getXMPInkProperty (i, "type");
                 book = getXMPInkProperty (i, "book");
                 egname = getXMPInkProperty (i, "egname");
-                if (egname.toString().charAt (2) == String.fromCharCode(94)) {
-                    egname = getXMPInkProperty (i, "egname").toString().substr(3);
-                };
                 //frequency = Number(getXMPInkProperty (i, "frequency"));
                 frequency = Number(getXMPsmartInkProperty (i, "coverage"));
                 angle = Number(getXMPInkProperty (i, "angle"));
@@ -3621,3 +3615,4 @@ function relinkArtworks () {
 //
 // TESTING
 //
+//~ jobWorkflow ();
