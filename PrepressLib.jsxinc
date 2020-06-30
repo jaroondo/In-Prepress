@@ -122,10 +122,10 @@ function OneUp() { /*definicia objektu artworku*/
 function DieSet() { /*definicia array-like objektu - výsek*/
     this.masterOneUp = new OneUp();
     this.punchDieCount = 27;
-    this.punchHorizontalOffset = 18.872;
+    this.punchHorizontalOffset = 18.832; //  original18.872
     this.punchVerticalOffset = 32.687;
     this.punchStepCount = 27;
-    this.punchStepWidth = 37.744;
+    this.punchStepWidth = 37.664; // original 37.744
 	this.getWidth = function () {
 		return this.punchStepWidth * (this.punchStepCount - 1) + this.punchHorizontalOffset + this.masterOneUp.cutDiameter;
 	};
