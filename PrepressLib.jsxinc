@@ -1336,15 +1336,15 @@ function setEgInks () { // nacita XMP data a nastaví egInks properties
             with (egInks.lastItem()) { // priradí XMP data
                 name = getXMPInkProperty (i, "name");
                 if (name.toString().charAt (2) == String.fromCharCode(94)) {
-                    name = getXMPInkProperty (i, "name").toString().substr(3);
+                    name = getXMPInkProperty (i, "name").toString().substr(0, 2); // .substr(3)
                 };
                 //name = getXMPInkProperty (i, "egname");
                 type = getXMPInkProperty (i, "type");
                 book = getXMPInkProperty (i, "book");
                 egname = getXMPInkProperty (i, "egname");
-                if (egname.toString().charAt (2) == String.fromCharCode(94)) {
-                    egname = getXMPInkProperty (i, "egname").toString().substr(3);
-                };
+                /*if (egname.toString().charAt (2) == String.fromCharCode(94)) {
+                    egname = getXMPInkProperty (i, "egname").toString().substr(0, 2); // .substr(3)
+                };*/
                 //frequency = Number(getXMPInkProperty (i, "frequency"));
                 frequency = Number(getXMPsmartInkProperty (i, "coverage"));
                 angle = Number(getXMPInkProperty (i, "angle"));
@@ -1365,10 +1365,10 @@ function setEgInks () { // nacita XMP data a nastaví egInks properties
     };
 };
 function usedInksList () { // výpis použitých farieb
-    var txtVar  = egInks.getInvertKey("name", "attribute", "technical");
+    var txtVar  = egInks.getInvertKey("egname", "attribute", "technical");
     var fillColor = egInks.getInvertKey("swatch", "attribute", "technical");
     for (var i = 0; i < txtVar.length; i++) {
-        myTextVariable.itemByName("C" + (i +1)).variableOptions.contents = txtVar[i];
+        myTextVariable.itemByName("C" + (i +1)).variableOptions.contents = txtVar[i].replace("^", "-");
         myCharacterStyle.itemByName("C" + (i+1)).fillColor = fillColor[i];
     };
 };
