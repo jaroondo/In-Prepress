@@ -2826,7 +2826,7 @@ function jobWorkflow () {
                 p1.g2 = p1.add("group");
                     var pdfExpCheckBox = p1.g2.add("checkbox", undefined, "Export to PDF");
                     var pdfViewCheckBox = p1.g2.add("checkbox", undefined, "View PDF");
-                        pdfViewCheckBox.value = false;
+                        pdfViewCheckBox.value = true;
                 p1.g3 = p1.add("group", undefined);
                     p1.g3.orientation = "column";
                     p1.g3.alignChildren = "left";
