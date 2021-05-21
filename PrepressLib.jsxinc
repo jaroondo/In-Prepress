@@ -1,4 +1,4 @@
-﻿// © 2019 Ing. Jaroslav ONDO
+﻿// © 2021 Ing. Jaroslav ONDO
 /**
 * @@@BUILDINFO@@@ PrepressLib.jsxinc !Version! Wed Nov 20 2019 09:48:55 GMT+0100
 */
@@ -3519,9 +3519,12 @@ function relinkArtworks () {
     var selectedArtworks = awArray.length;
     var startingIndex = 0;
     var relinkCount = 1;
-    var nextFreeIndex = startingIndex + (selectedArtworks * relinkCount);
-    var endingIndex = nextFreeIndex - 1;
+    var endingIndex = nextFreeIndex() - 1;
     var selectedIndexArray = [];
+    
+    function nextFreeIndex () {
+        return startingIndex + (selectedArtworks * relinkCount);
+    };
     
     if (app.selection.length > 0) {
         for (var i = 0; i < app.selection.length; i++) {
@@ -3551,8 +3554,7 @@ function relinkArtworks () {
                     if (awArray.length > 0) {
                         selectedArtworks = awArray.length;
                         artworkEdittext.text = selectedArtworks;
-                        nextFreeIndex = startingIndex + (selectedArtworks * relinkCount);
-                        nextfreeIndexEdittext.text = nextFreeIndex;
+                        nextfreeIndexEdittext.text = nextFreeIndex();
                         artworkFile = awArray[0];
                         workingFolder = artworkFile.parent;
                     };
@@ -3565,8 +3567,7 @@ function relinkArtworks () {
                     startingIndexEdittext.text = startingIndex;
                     startingIndexEdittext.onChange = function () {
                         startingIndex = Number(startingIndexEdittext.text);
-                        nextFreeIndex = startingIndex + (selectedArtworks * relinkCount);
-                        nextfreeIndexEdittext.text = nextFreeIndex;
+                        nextfreeIndexEdittext.text = nextFreeIndex();
                     };
                     startingIndexEdittext.onChanging = function () {
                         var valid = /^[\d.]+$/.test (startingIndexEdittext.text);
@@ -3579,8 +3580,7 @@ function relinkArtworks () {
                     relinkCountEdittext.text = relinkCount;
                     relinkCountEdittext.onChange = function () {
                         relinkCount = Number(relinkCountEdittext.text);
-                        nextFreeIndex = startingIndex + (selectedArtworks * relinkCount);
-                        nextfreeIndexEdittext.text = nextFreeIndex;
+                        nextfreeIndexEdittext.text = nextFreeIndex();
                     };
                     relinkCountEdittext.onChanging = function () {
                         var valid = /^[\d.]+$/.test (relinkCountEdittext.text);
@@ -3591,7 +3591,7 @@ function relinkArtworks () {
                 var nextfreeIndexEdittext = p1.g3.add("edittext");
                     nextfreeIndexEdittext.characters = 10;
                     nextfreeIndexEdittext.enabled = false;
-                    nextfreeIndexEdittext.text = nextFreeIndex;
+                    nextfreeIndexEdittext.text = nextFreeIndex();
 
         var buttonGroup = w.add ('group {alignment: "right"}');
             buttonGroup.add ("button", undefined, "OK");
@@ -3600,19 +3600,21 @@ function relinkArtworks () {
     if (w.show () == 1) {
         var changingAlert = false;
         var awArrayIndex = 0;
-        setProgWinContent ("Relinking artworks...", 0, nextFreeIndex);
+        setProgWinContent ("Relinking artworks...", 0, nextFreeIndex());
         progWin.show();
-            for (var i = startingIndex; i < nextFreeIndex; ) {
+            for (var i = startingIndex; i < nextFreeIndex(); ) {
                 for (var j = 0; j < relinkCount; j++) {
                     myDocument.links[i].relink(awArray[awArrayIndex]);
-                    i++;
-                    if (Math.round(myDocument.links[i].parent.absoluteHorizontalScale) != 100) {
+                    if (myDocument.links[i].parent.absoluteHorizontalScale != 100) { 
                         myDocument.links[i].parent.absoluteHorizontalScale = 100;
                         myDocument.links[i].parent.absoluteVerticalScale = 100;
                     };
+                    i++;
+                    if (i >= myDocument.links.length) {break;};
                 };
                 awArrayIndex++;
                 pbar.value = i; progWin.update();
+                if (i >= myDocument.links.length) {break;};
             };
         progWin.close();
         alert("Relink Artworks done successfully...");
