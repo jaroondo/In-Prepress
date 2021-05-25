@@ -296,7 +296,7 @@ function EgInk() { //definicia objektu esko graphics ink
         return (this.attribute != "technical");
      };
      this.crossMarkACondition = function () {
-        return (this.attribute != "technical" && this.name.search("_1") == -1);
+        return (this.attribute != "technical" && this.name.indexOf("_1") == -1);
      };
      this.negativeInksFilterCondition = function () {
         return (this.attribute != "technical" && this.dotshape.length == 0);
@@ -453,7 +453,7 @@ function EgInks() { //definicia array-like objektu esko graphic inks
 	this.getSubStr = function (outKey, inKey, subStr) { // vrati polozky obsahujuce substring
 		var result = [];
 		for (var i = 0; i < this.length; i++) {
-			if (typeof this[i][inKey] == "string" && this[i][inKey].search(subStr) >=0 ) {
+			if (typeof this[i][inKey] == "string" && this[i][inKey].indexOf(subStr) >=0 ) { // search(subStr)
 				result[result.length] = this[i][outKey];
 			};
 		};
@@ -1267,12 +1267,12 @@ function setSxObjectStyles () { // nastavi objektove styly S1 az Sn
     var mixedName = "";
     var usedInks = [];
     for (var i =0 ; i < usedNames.length; i++) { // polia bez duplicity
-        if (usedNames[i].search("_1") >= 0 || usedNames[i].search("_2") >= 0) { //usedNames[i].search("_1") >= 0 ||    vyhodit  ak skala "_1"  ma byt aj solo 
+        if (usedNames[i].indexOf("_1") >= 0 || usedNames[i].indexOf("_2") >= 0) { //usedNames[i].search("_1") >= 0 ||    vyhodit  ak skala "_1"  ma byt aj solo 
             subName = usedNames[i].substr(0, usedNames[i].length - 2);
             clearNames.push(subName);
             usedNames[i] = subName;
             for (var j =0 ; j < usedNames.length; j++) { // prehlada a vyhodi dvojca
-                 if (usedNames[j].search(subName + "_1") >= 0 || usedNames[j].search(subName + "_2") >= 0) { //usedNames[j].search(subName + "_1") >= 0 ||    vyhodit  ak skala "_1"  ma byt aj solo
+                 if (usedNames[j].indexOf(subName + "_1") >= 0 || usedNames[j].indexOf(subName + "_2") >= 0) { //usedNames[j].search(subName + "_1") >= 0 ||    vyhodit  ak skala "_1"  ma byt aj solo
                      usedNames.splice(j, 1);
                      usedUnderPrints.splice(j, 1);
                  };
@@ -1335,16 +1335,13 @@ function setEgInks () { // nacita XMP data a nastaví egInks properties
             egInks.add();
             with (egInks.lastItem()) { // priradí XMP data
                 name = getXMPInkProperty (i, "name");
-                if (name.toString().charAt (2) == String.fromCharCode(94)) {
-                    name = getXMPInkProperty (i, "name").toString().substr(0, 2); // .substr(3)
+                if (name.toString().charAt (2) == String.fromCharCode(94)) { 
+                    name = getXMPInkProperty (i, "name").toString().substr(3);
                 };
                 //name = getXMPInkProperty (i, "egname");
                 type = getXMPInkProperty (i, "type");
                 book = getXMPInkProperty (i, "book");
                 egname = getXMPInkProperty (i, "egname");
-                /*if (egname.toString().charAt (2) == String.fromCharCode(94)) {
-                    egname = getXMPInkProperty (i, "egname").toString().substr(0, 2); // .substr(3)
-                };*/
                 //frequency = Number(getXMPInkProperty (i, "frequency"));
                 frequency = Number(getXMPsmartInkProperty (i, "coverage"));
                 angle = Number(getXMPInkProperty (i, "angle"));
@@ -1365,10 +1362,10 @@ function setEgInks () { // nacita XMP data a nastaví egInks properties
     };
 };
 function usedInksList () { // výpis použitých farieb
-    var txtVar  = egInks.getInvertKey("egname", "attribute", "technical");
+    var txtVar  = egInks.getInvertKey("name", "attribute", "technical");
     var fillColor = egInks.getInvertKey("swatch", "attribute", "technical");
     for (var i = 0; i < txtVar.length; i++) {
-        myTextVariable.itemByName("C" + (i +1)).variableOptions.contents = txtVar[i].replace("^", "-");
+        myTextVariable.itemByName("C" + (i +1)).variableOptions.contents = txtVar[i];
         myCharacterStyle.itemByName("C" + (i+1)).fillColor = fillColor[i];
     };
 };
@@ -1487,15 +1484,15 @@ function makeMixColor (colorName, inkList, tintList) { // vytvori a vrati novu m
         result = egInks.getKey ("swatch", "inkName", inkList[0].name)[0];
     } else { // inak je zadanych viac inkov
         for (var j = 0; j < inkList.length; j++) { // spocitanie spot inkov a nastavenie CMYK hodnot
-            if (inkList[j].name.search(/process/i) < 0) { // ak sa nejedna o procesny ink
+            if (inkList[j].name.indexOf(/process/i) < 0) { // ak sa nejedna o procesny ink
                 spotCount++;
-            } else if (inkList[j].name.search(/process cyan/i) >= 0) { // ak sa jedna o procesny cyan
+            } else if (inkList[j].name.indexOf(/process cyan/i) >= 0) { // ak sa jedna o procesny cyan
                 cmykValue[0] = 100;
-            } else if (inkList[j].name.search(/process magenta/i) >= 0) { // ak sa jedna o procesny magenta
+            } else if (inkList[j].name.indexOf(/process magenta/i) >= 0) { // ak sa jedna o procesny magenta
                 cmykValue[1] = 100;
-            } else if (inkList[j].name.search(/process yellow/i) >= 0) { // ak sa jedna o procesny yellow
+            } else if (inkList[j].name.indexOf(/process yellow/i) >= 0) { // ak sa jedna o procesny yellow
                 cmykValue[2] = 100;
-            } else if (inkList[j].name.search(/process black/i) >= 0) { // ak sa jedna o procesny black
+            } else if (inkList[j].name.indexOf(/process black/i) >= 0) { // ak sa jedna o procesny black
                 cmykValue[3] = 100;
             };
         };
@@ -1625,7 +1622,7 @@ function pdfExport(viewPDF) {
         return;
     };
     loadJobPrefs ();
-    var exportFolder = (myDocument.name.search("-sp") == -1) ? jobPrefs.topExportFolder:jobPrefs.bottomExportFolder
+    var exportFolder = (myDocument.name.indexOf("-sp") == -1) ? jobPrefs.topExportFolder:jobPrefs.bottomExportFolder
     if (!exportFolder.exists || exportFolder.error != "") {
         alert("Export folder will be changed to Artwork folder due to error: " + exportFolder.error);
         exportFolder = myDocument.filePath;
@@ -1701,7 +1698,7 @@ function artworkPreview (artworkFile) {
         setEgInks ();
         
         //primer
-        if (myLinkXmp.getProperty ("http://my.wbcSchema.namespace/", "primer").toString().search(/White/i) != -1) {
+        if (myLinkXmp.getProperty ("http://my.wbcSchema.namespace/", "primer").toString().indexOf(/White/i) != -1) {
             myDocument.layers.itemByName("basecoat").visible = false;
         } else {
             myDocument.layers.itemByName("basecoat").visible = true;
@@ -3143,7 +3140,7 @@ function loadOrEditOneUp (doneAlert) {
         app.open(inddFile);
         return inddFile;
     } else {
-        if (awFile.displayName.search("-sp") > -1) {
+        if (awFile.displayName.indexOf("-sp") > -1) {
             app.open(jobPrefs.defaultBottomTemplateFile);
         } else {
             app.open(jobPrefs.defaultTopTemplateFile);
