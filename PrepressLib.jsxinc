@@ -1698,11 +1698,12 @@ function artworkPreview (artworkFile) {
         setEgInks ();
         
         //primer
-        if (myLinkXmp.getProperty ("http://my.wbcSchema.namespace/", "primer").toString().indexOf(/White/i) != -1) {
+        if (myLinkXmp.getProperty ("http://my.wbcSchema.namespace/", "primer").toString().search(RegExp("White", "i")) >= 0) {
             myDocument.layers.itemByName("basecoat").visible = false;
         } else {
             myDocument.layers.itemByName("basecoat").visible = true;
-        };    
+        }; 
+        $.writeln(myDocument.layers.itemByName("basecoat").visible);
         
         var oh = {};
         //oh = eval(myDocument.extractLabel("oneUp"));
